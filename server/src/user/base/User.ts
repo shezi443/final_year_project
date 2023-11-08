@@ -11,14 +11,23 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsString, IsOptional } from "class-validator";
+import { Account } from "../../account/base/Account";
+import { ValidateNested, IsOptional, IsDate, IsString } from "class-validator";
 import { Type } from "class-transformer";
-import { IsJSONValue } from "@app/custom-validators";
-import { GraphQLJSON } from "graphql-type-json";
-import { JsonValue } from "type-fest";
+import { Listing } from "../../listing/base/Listing";
+import { Reservation } from "../../reservation/base/Reservation";
 
 @ObjectType()
 class User {
+  @ApiProperty({
+    required: false,
+    type: () => [Account],
+  })
+  @ValidateNested()
+  @Type(() => Account)
+  @IsOptional()
+  accounts?: Array<Account>;
+
   @ApiProperty({
     required: true,
   })
@@ -36,7 +45,37 @@ class User {
   @Field(() => String, {
     nullable: true,
   })
-  firstName!: string | null;
+  email!: string | null;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  @Field(() => Date, {
+    nullable: true,
+  })
+  emailVerified!: Date | null;
+
+  @ApiProperty({
+    required: true,
+    type: String,
+  })
+  @IsString()
+  @Field(() => String)
+  favoriteIds!: string;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  hashedPassword!: string | null;
 
   @ApiProperty({
     required: true,
@@ -55,14 +94,36 @@ class User {
   @Field(() => String, {
     nullable: true,
   })
-  lastName!: string | null;
+  image!: string | null;
 
   @ApiProperty({
-    required: true,
+    required: false,
+    type: () => [Listing],
   })
-  @IsJSONValue()
-  @Field(() => GraphQLJSON)
-  roles!: JsonValue;
+  @ValidateNested()
+  @Type(() => Listing)
+  @IsOptional()
+  listings?: Array<Listing>;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  name!: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Reservation],
+  })
+  @ValidateNested()
+  @Type(() => Reservation)
+  @IsOptional()
+  reservations?: Array<Reservation>;
 
   @ApiProperty({
     required: true,
@@ -71,14 +132,6 @@ class User {
   @Type(() => Date)
   @Field(() => Date)
   updatedAt!: Date;
-
-  @ApiProperty({
-    required: true,
-    type: String,
-  })
-  @IsString()
-  @Field(() => String)
-  username!: string;
 }
 
 export { User as User };

@@ -11,23 +11,25 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional } from "class-validator";
-import { IsJSONValue } from "@app/custom-validators";
-import { GraphQLJSON } from "graphql-type-json";
-import { InputJsonValue } from "../../types";
+import { AccountCreateNestedManyWithoutUsersInput } from "./AccountCreateNestedManyWithoutUsersInput";
+import { ValidateNested, IsOptional, IsString, IsDate } from "class-validator";
+import { Type } from "class-transformer";
+import { ListingCreateNestedManyWithoutUsersInput } from "./ListingCreateNestedManyWithoutUsersInput";
+import { ReservationCreateNestedManyWithoutUsersInput } from "./ReservationCreateNestedManyWithoutUsersInput";
 
 @InputType()
 class UserCreateInput {
   @ApiProperty({
     required: false,
-    type: String,
+    type: () => AccountCreateNestedManyWithoutUsersInput,
   })
-  @IsString()
+  @ValidateNested()
+  @Type(() => AccountCreateNestedManyWithoutUsersInput)
   @IsOptional()
-  @Field(() => String, {
+  @Field(() => AccountCreateNestedManyWithoutUsersInput, {
     nullable: true,
   })
-  firstName?: string | null;
+  accounts?: AccountCreateNestedManyWithoutUsersInput;
 
   @ApiProperty({
     required: false,
@@ -38,7 +40,18 @@ class UserCreateInput {
   @Field(() => String, {
     nullable: true,
   })
-  lastName?: string | null;
+  email?: string | null;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  @Field(() => Date, {
+    nullable: true,
+  })
+  emailVerified?: Date | null;
 
   @ApiProperty({
     required: true,
@@ -46,22 +59,64 @@ class UserCreateInput {
   })
   @IsString()
   @Field(() => String)
-  password!: string;
+  favoriteIds!: string;
 
   @ApiProperty({
-    required: true,
-  })
-  @IsJSONValue()
-  @Field(() => GraphQLJSON)
-  roles!: InputJsonValue;
-
-  @ApiProperty({
-    required: true,
+    required: false,
     type: String,
   })
   @IsString()
-  @Field(() => String)
-  username!: string;
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  hashedPassword?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  image?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => ListingCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => ListingCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => ListingCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  listings?: ListingCreateNestedManyWithoutUsersInput;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  name?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => ReservationCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => ReservationCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => ReservationCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  reservations?: ReservationCreateNestedManyWithoutUsersInput;
 }
 
 export { UserCreateInput as UserCreateInput };

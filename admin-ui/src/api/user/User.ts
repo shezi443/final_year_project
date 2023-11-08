@@ -1,11 +1,18 @@
-import { JsonValue } from "type-fest";
+import { Account } from "../account/Account";
+import { Listing } from "../listing/Listing";
+import { Reservation } from "../reservation/Reservation";
 
 export type User = {
+  accounts?: Array<Account>;
   createdAt: Date;
-  firstName: string | null;
+  email: string | null;
+  emailVerified: Date | null;
+  favoriteIds: string;
+  hashedPassword: string | null;
   id: string;
-  lastName: string | null;
-  roles: JsonValue;
+  image: string | null;
+  listings?: Array<Listing>;
+  name: string | null;
+  reservations?: Array<Reservation>;
   updatedAt: Date;
-  username: string;
 };

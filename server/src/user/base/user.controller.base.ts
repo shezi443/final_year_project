@@ -23,6 +23,15 @@ import { UserWhereUniqueInput } from "./UserWhereUniqueInput";
 import { UserFindManyArgs } from "./UserFindManyArgs";
 import { UserUpdateInput } from "./UserUpdateInput";
 import { User } from "./User";
+import { AccountFindManyArgs } from "../../account/base/AccountFindManyArgs";
+import { Account } from "../../account/base/Account";
+import { AccountWhereUniqueInput } from "../../account/base/AccountWhereUniqueInput";
+import { ListingFindManyArgs } from "../../listing/base/ListingFindManyArgs";
+import { Listing } from "../../listing/base/Listing";
+import { ListingWhereUniqueInput } from "../../listing/base/ListingWhereUniqueInput";
+import { ReservationFindManyArgs } from "../../reservation/base/ReservationFindManyArgs";
+import { Reservation } from "../../reservation/base/Reservation";
+import { ReservationWhereUniqueInput } from "../../reservation/base/ReservationWhereUniqueInput";
 
 export class UserControllerBase {
   constructor(protected readonly service: UserService) {}
@@ -33,12 +42,14 @@ export class UserControllerBase {
       data: data,
       select: {
         createdAt: true,
-        firstName: true,
+        email: true,
+        emailVerified: true,
+        favoriteIds: true,
+        hashedPassword: true,
         id: true,
-        lastName: true,
-        roles: true,
+        image: true,
+        name: true,
         updatedAt: true,
-        username: true,
       },
     });
   }
@@ -52,12 +63,14 @@ export class UserControllerBase {
       ...args,
       select: {
         createdAt: true,
-        firstName: true,
+        email: true,
+        emailVerified: true,
+        favoriteIds: true,
+        hashedPassword: true,
         id: true,
-        lastName: true,
-        roles: true,
+        image: true,
+        name: true,
         updatedAt: true,
-        username: true,
       },
     });
   }
@@ -72,12 +85,14 @@ export class UserControllerBase {
       where: params,
       select: {
         createdAt: true,
-        firstName: true,
+        email: true,
+        emailVerified: true,
+        favoriteIds: true,
+        hashedPassword: true,
         id: true,
-        lastName: true,
-        roles: true,
+        image: true,
+        name: true,
         updatedAt: true,
-        username: true,
       },
     });
     if (result === null) {
@@ -101,12 +116,14 @@ export class UserControllerBase {
         data: data,
         select: {
           createdAt: true,
-          firstName: true,
+          email: true,
+          emailVerified: true,
+          favoriteIds: true,
+          hashedPassword: true,
           id: true,
-          lastName: true,
-          roles: true,
+          image: true,
+          name: true,
           updatedAt: true,
-          username: true,
         },
       });
     } catch (error) {
@@ -130,12 +147,14 @@ export class UserControllerBase {
         where: params,
         select: {
           createdAt: true,
-          firstName: true,
+          email: true,
+          emailVerified: true,
+          favoriteIds: true,
+          hashedPassword: true,
           id: true,
-          lastName: true,
-          roles: true,
+          image: true,
+          name: true,
           updatedAt: true,
-          username: true,
         },
       });
     } catch (error) {
@@ -146,5 +165,270 @@ export class UserControllerBase {
       }
       throw error;
     }
+  }
+
+  @common.Get("/:id/accounts")
+  @ApiNestedQuery(AccountFindManyArgs)
+  async findManyAccounts(
+    @common.Req() request: Request,
+    @common.Param() params: UserWhereUniqueInput
+  ): Promise<Account[]> {
+    const query = plainToClass(AccountFindManyArgs, request.query);
+    const results = await this.service.findAccounts(params.id, {
+      ...query,
+      select: {
+        accessToken: true,
+        expiresAt: true,
+        id: true,
+        idToken: true,
+        provider: true,
+        providerAccountId: true,
+        refreshToken: true,
+        scope: true,
+        sessionState: true,
+        tokenType: true,
+        typeField: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/accounts")
+  async connectAccounts(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: AccountWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      accounts: {
+        connect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/accounts")
+  async updateAccounts(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: AccountWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      accounts: {
+        set: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/accounts")
+  async disconnectAccounts(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: AccountWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      accounts: {
+        disconnect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Get("/:id/listings")
+  @ApiNestedQuery(ListingFindManyArgs)
+  async findManyListings(
+    @common.Req() request: Request,
+    @common.Param() params: UserWhereUniqueInput
+  ): Promise<Listing[]> {
+    const query = plainToClass(ListingFindManyArgs, request.query);
+    const results = await this.service.findListings(params.id, {
+      ...query,
+      select: {
+        bathroomCount: true,
+        category: true,
+        createdAt: true,
+        description: true,
+        guestCount: true,
+        id: true,
+        imageSrc: true,
+        locationValue: true,
+        price: true,
+        roomCount: true,
+        title: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/listings")
+  async connectListings(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: ListingWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      listings: {
+        connect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/listings")
+  async updateListings(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: ListingWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      listings: {
+        set: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/listings")
+  async disconnectListings(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: ListingWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      listings: {
+        disconnect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Get("/:id/reservations")
+  @ApiNestedQuery(ReservationFindManyArgs)
+  async findManyReservations(
+    @common.Req() request: Request,
+    @common.Param() params: UserWhereUniqueInput
+  ): Promise<Reservation[]> {
+    const query = plainToClass(ReservationFindManyArgs, request.query);
+    const results = await this.service.findReservations(params.id, {
+      ...query,
+      select: {
+        createdAt: true,
+        endDate: true,
+        id: true,
+
+        listing: {
+          select: {
+            id: true,
+          },
+        },
+
+        startDate: true,
+        totalPrice: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/reservations")
+  async connectReservations(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: ReservationWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      reservations: {
+        connect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/reservations")
+  async updateReservations(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: ReservationWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      reservations: {
+        set: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/reservations")
+  async disconnectReservations(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: ReservationWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      reservations: {
+        disconnect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
   }
 }

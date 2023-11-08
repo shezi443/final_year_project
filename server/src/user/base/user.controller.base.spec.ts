@@ -19,41 +19,49 @@ const nonExistingId = "nonExistingId";
 const existingId = "existingId";
 const CREATE_INPUT = {
   createdAt: new Date(),
-  firstName: "exampleFirstName",
+  email: "exampleEmail",
+  emailVerified: new Date(),
+  favoriteIds: "exampleFavoriteIds",
+  hashedPassword: "exampleHashedPassword",
   id: "exampleId",
-  lastName: "exampleLastName",
-  password: "examplePassword",
+  image: "exampleImage",
+  name: "exampleName",
   updatedAt: new Date(),
-  username: "exampleUsername",
 };
 const CREATE_RESULT = {
   createdAt: new Date(),
-  firstName: "exampleFirstName",
+  email: "exampleEmail",
+  emailVerified: new Date(),
+  favoriteIds: "exampleFavoriteIds",
+  hashedPassword: "exampleHashedPassword",
   id: "exampleId",
-  lastName: "exampleLastName",
-  password: "examplePassword",
+  image: "exampleImage",
+  name: "exampleName",
   updatedAt: new Date(),
-  username: "exampleUsername",
 };
 const FIND_MANY_RESULT = [
   {
     createdAt: new Date(),
-    firstName: "exampleFirstName",
+    email: "exampleEmail",
+    emailVerified: new Date(),
+    favoriteIds: "exampleFavoriteIds",
+    hashedPassword: "exampleHashedPassword",
     id: "exampleId",
-    lastName: "exampleLastName",
-    password: "examplePassword",
+    image: "exampleImage",
+    name: "exampleName",
     updatedAt: new Date(),
-    username: "exampleUsername",
   },
 ];
 const FIND_ONE_RESULT = {
   createdAt: new Date(),
-  firstName: "exampleFirstName",
+  email: "exampleEmail",
+  emailVerified: new Date(),
+  favoriteIds: "exampleFavoriteIds",
+  hashedPassword: "exampleHashedPassword",
   id: "exampleId",
-  lastName: "exampleLastName",
-  password: "examplePassword",
+  image: "exampleImage",
+  name: "exampleName",
   updatedAt: new Date(),
-  username: "exampleUsername",
 };
 
 const service = {
@@ -139,6 +147,7 @@ describe("User", () => {
       .expect({
         ...CREATE_RESULT,
         createdAt: CREATE_RESULT.createdAt.toISOString(),
+        emailVerified: CREATE_RESULT.emailVerified.toISOString(),
         updatedAt: CREATE_RESULT.updatedAt.toISOString(),
       });
   });
@@ -151,6 +160,7 @@ describe("User", () => {
         {
           ...FIND_MANY_RESULT[0],
           createdAt: FIND_MANY_RESULT[0].createdAt.toISOString(),
+          emailVerified: FIND_MANY_RESULT[0].emailVerified.toISOString(),
           updatedAt: FIND_MANY_RESULT[0].updatedAt.toISOString(),
         },
       ]);
@@ -174,6 +184,7 @@ describe("User", () => {
       .expect({
         ...FIND_ONE_RESULT,
         createdAt: FIND_ONE_RESULT.createdAt.toISOString(),
+        emailVerified: FIND_ONE_RESULT.emailVerified.toISOString(),
         updatedAt: FIND_ONE_RESULT.updatedAt.toISOString(),
       });
   });
@@ -187,6 +198,7 @@ describe("User", () => {
       .expect({
         ...CREATE_RESULT,
         createdAt: CREATE_RESULT.createdAt.toISOString(),
+        emailVerified: CREATE_RESULT.emailVerified.toISOString(),
         updatedAt: CREATE_RESULT.updatedAt.toISOString(),
       })
       .then(function () {

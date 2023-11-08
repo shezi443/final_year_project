@@ -9,6 +9,18 @@ import { UserList } from "./user/UserList";
 import { UserCreate } from "./user/UserCreate";
 import { UserEdit } from "./user/UserEdit";
 import { UserShow } from "./user/UserShow";
+import { AccountList } from "./account/AccountList";
+import { AccountCreate } from "./account/AccountCreate";
+import { AccountEdit } from "./account/AccountEdit";
+import { AccountShow } from "./account/AccountShow";
+import { ListingList } from "./listing/ListingList";
+import { ListingCreate } from "./listing/ListingCreate";
+import { ListingEdit } from "./listing/ListingEdit";
+import { ListingShow } from "./listing/ListingShow";
+import { ReservationList } from "./reservation/ReservationList";
+import { ReservationCreate } from "./reservation/ReservationCreate";
+import { ReservationEdit } from "./reservation/ReservationEdit";
+import { ReservationShow } from "./reservation/ReservationShow";
 import { jwtAuthProvider } from "./auth-provider/ra-auth-jwt";
 
 const App = (): React.ReactElement => {
@@ -41,6 +53,27 @@ const App = (): React.ReactElement => {
           edit={UserEdit}
           create={UserCreate}
           show={UserShow}
+        />
+        <Resource
+          name="Account"
+          list={AccountList}
+          edit={AccountEdit}
+          create={AccountCreate}
+          show={AccountShow}
+        />
+        <Resource
+          name="Listing"
+          list={ListingList}
+          edit={ListingEdit}
+          create={ListingCreate}
+          show={ListingShow}
+        />
+        <Resource
+          name="Reservation"
+          list={ReservationList}
+          edit={ReservationEdit}
+          create={ReservationCreate}
+          show={ReservationShow}
         />
       </Admin>
     </div>

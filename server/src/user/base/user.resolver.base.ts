@@ -20,6 +20,12 @@ import { UserCountArgs } from "./UserCountArgs";
 import { UserFindManyArgs } from "./UserFindManyArgs";
 import { UserFindUniqueArgs } from "./UserFindUniqueArgs";
 import { User } from "./User";
+import { AccountFindManyArgs } from "../../account/base/AccountFindManyArgs";
+import { Account } from "../../account/base/Account";
+import { ListingFindManyArgs } from "../../listing/base/ListingFindManyArgs";
+import { Listing } from "../../listing/base/Listing";
+import { ReservationFindManyArgs } from "../../reservation/base/ReservationFindManyArgs";
+import { Reservation } from "../../reservation/base/Reservation";
 import { UserService } from "../user.service";
 @graphql.Resolver(() => User)
 export class UserResolverBase {
@@ -85,5 +91,47 @@ export class UserResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => [Account], { name: "accounts" })
+  async resolveFieldAccounts(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: AccountFindManyArgs
+  ): Promise<Account[]> {
+    const results = await this.service.findAccounts(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @graphql.ResolveField(() => [Listing], { name: "listings" })
+  async resolveFieldListings(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: ListingFindManyArgs
+  ): Promise<Listing[]> {
+    const results = await this.service.findListings(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @graphql.ResolveField(() => [Reservation], { name: "reservations" })
+  async resolveFieldReservations(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: ReservationFindManyArgs
+  ): Promise<Reservation[]> {
+    const results = await this.service.findReservations(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
   }
 }

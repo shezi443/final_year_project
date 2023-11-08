@@ -11,23 +11,25 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional } from "class-validator";
-import { IsJSONValue } from "@app/custom-validators";
-import { GraphQLJSON } from "graphql-type-json";
-import { InputJsonValue } from "../../types";
+import { AccountUpdateManyWithoutUsersInput } from "./AccountUpdateManyWithoutUsersInput";
+import { ValidateNested, IsOptional, IsString, IsDate } from "class-validator";
+import { Type } from "class-transformer";
+import { ListingUpdateManyWithoutUsersInput } from "./ListingUpdateManyWithoutUsersInput";
+import { ReservationUpdateManyWithoutUsersInput } from "./ReservationUpdateManyWithoutUsersInput";
 
 @InputType()
 class UserUpdateInput {
   @ApiProperty({
     required: false,
-    type: String,
+    type: () => AccountUpdateManyWithoutUsersInput,
   })
-  @IsString()
+  @ValidateNested()
+  @Type(() => AccountUpdateManyWithoutUsersInput)
   @IsOptional()
-  @Field(() => String, {
+  @Field(() => AccountUpdateManyWithoutUsersInput, {
     nullable: true,
   })
-  firstName?: string | null;
+  accounts?: AccountUpdateManyWithoutUsersInput;
 
   @ApiProperty({
     required: false,
@@ -38,7 +40,18 @@ class UserUpdateInput {
   @Field(() => String, {
     nullable: true,
   })
-  lastName?: string | null;
+  email?: string | null;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  @Field(() => Date, {
+    nullable: true,
+  })
+  emailVerified?: Date | null;
 
   @ApiProperty({
     required: false,
@@ -49,17 +62,7 @@ class UserUpdateInput {
   @Field(() => String, {
     nullable: true,
   })
-  password?: string;
-
-  @ApiProperty({
-    required: false,
-  })
-  @IsJSONValue()
-  @IsOptional()
-  @Field(() => GraphQLJSON, {
-    nullable: true,
-  })
-  roles?: InputJsonValue;
+  favoriteIds?: string;
 
   @ApiProperty({
     required: false,
@@ -70,7 +73,53 @@ class UserUpdateInput {
   @Field(() => String, {
     nullable: true,
   })
-  username?: string;
+  hashedPassword?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  image?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => ListingUpdateManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => ListingUpdateManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => ListingUpdateManyWithoutUsersInput, {
+    nullable: true,
+  })
+  listings?: ListingUpdateManyWithoutUsersInput;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  name?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => ReservationUpdateManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => ReservationUpdateManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => ReservationUpdateManyWithoutUsersInput, {
+    nullable: true,
+  })
+  reservations?: ReservationUpdateManyWithoutUsersInput;
 }
 
 export { UserUpdateInput as UserUpdateInput };

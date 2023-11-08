@@ -1,28 +1,53 @@
 import * as React from "react";
+
 import {
   Edit,
   SimpleForm,
   EditProps,
-  TextInput,
-  PasswordInput,
+  ReferenceArrayInput,
   SelectArrayInput,
+  TextInput,
+  DateTimeInput,
 } from "react-admin";
-import { ROLES_OPTIONS } from "../user/RolesOptions";
+
+import { AccountTitle } from "../account/AccountTitle";
+import { ListingTitle } from "../listing/ListingTitle";
+import { ReservationTitle } from "../reservation/ReservationTitle";
 
 export const UserEdit = (props: EditProps): React.ReactElement => {
   return (
     <Edit {...props}>
       <SimpleForm>
-        <TextInput label="First Name" source="firstName" />
-        <TextInput label="Last Name" source="lastName" />
-        <PasswordInput label="Password" source="password" />
-        <SelectArrayInput
-          source="roles"
-          choices={ROLES_OPTIONS}
-          optionText="label"
-          optionValue="value"
-        />
-        <TextInput label="Username" source="username" />
+        <ReferenceArrayInput
+          source="accounts"
+          reference="Account"
+          parse={(value: any) => value && value.map((v: any) => ({ id: v }))}
+          format={(value: any) => value && value.map((v: any) => v.id)}
+        >
+          <SelectArrayInput optionText={AccountTitle} />
+        </ReferenceArrayInput>
+        <TextInput label="Email" source="email" />
+        <DateTimeInput label="Email Verified" source="emailVerified" />
+        <TextInput label="Favorite Ids" source="favoriteIds" />
+        <TextInput label="Hashed Password" source="hashedPassword" />
+        <TextInput label="Image" source="image" />
+        <ReferenceArrayInput
+          source="listings"
+          reference="Listing"
+          parse={(value: any) => value && value.map((v: any) => ({ id: v }))}
+          format={(value: any) => value && value.map((v: any) => v.id)}
+        >
+          <SelectArrayInput optionText={ListingTitle} />
+        </ReferenceArrayInput>
+        <TextInput label="Name" source="name" />
+        <ReferenceArrayInput
+          source="reservations"
+          reference="Reservation"
+          parse={(value: any) => value && value.map((v: any) => ({ id: v }))}
+          format={(value: any) => value && value.map((v: any) => v.id)}
+        >
+          <SelectArrayInput optionText={ReservationTitle} />
+        </ReferenceArrayInput>
       </SimpleForm>
     </Edit>
   );

@@ -1,5 +1,5 @@
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DB_URL")
 }
 
@@ -8,12 +8,63 @@ generator client {
 }
 
 model User {
-  createdAt DateTime @default(now())
-  firstName String?
-  id        String   @id @default(cuid())
-  lastName  String?
-  password  String
-  roles     Json
-  updatedAt DateTime @updatedAt
-  username  String   @unique
+  accounts       Account[]
+  createdAt      DateTime      @default(now())
+  email          String?       @unique
+  emailVerified  DateTime?
+  favoriteIds    String        @db.ObjectId
+  hashedPassword String?
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  image          String?
+  listings       Listing[]
+  name           String?
+  reservations   Reservation[]
+  updatedAt      DateTime      @updatedAt
+}
+
+model Account {
+  accessToken       String? @map("access_token") @db.String
+  expiresAt         Int?    @map("expires_at")
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  idToken           String? @map("id_token") @db.String
+  provider          String
+  providerAccountId String
+  refreshToken      String? @map("refresh_token") @db.String
+  scope             String?
+  sessionState      String? @map("session_state")
+  tokenType         String? @map("token_type")
+  typeField         String  @map("type")
+  user              User    @relation(fields: [userId], references: [id])
+  userId            String  @db.ObjectId
+
+  @@unique([provider, providerAccountId])
+}
+
+model Listing {
+  bathroomCount Int
+  category      String
+  createdAt     DateTime      @default(now())
+  description   String
+  guestCount    Int
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  imageSrc      String
+  locationValue String
+  price         Int
+  reservations  Reservation[]
+  roomCount     Int
+  title         String
+  user          User          @relation(fields: [userId], references: [id])
+  userId        String        @db.ObjectId
+}
+
+model Reservation {
+  createdAt  DateTime @default(now())
+  endDate    DateTime
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  listing    Listing  @relation(fields: [listingId], references: [id])
+  listingId  String   @db.ObjectId
+  startDate  DateTime
+  totalPrice Int
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String   @db.ObjectId
 }
